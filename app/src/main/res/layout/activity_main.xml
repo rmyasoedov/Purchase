@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/background_repeat"
     tools:context=".MainActivity">
 
 
@@ -15,8 +16,6 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:gravity="center"
-            android:background="#3F51B5"
             style="@style/ToolbarStyle"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
@@ -29,28 +28,15 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/sdfsdf"
+                    android:id="@+id/groupName"
                     style="@style/ToolbarTextStyle"
                     android:layout_column="0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="Список покупок"
-                    android:ellipsize="end"
-                    android:layout_gravity="fill_horizontal"
-                    android:singleLine="true"
-                    android:paddingRight="7dp"
-                    android:maxWidth="0dp"/>
-
-
+                    android:layout_gravity="fill_horizontal"/>
 
                 <LinearLayout
+                    style="@style/RightBip"
                     android:layout_column="1"
-                    android:clickable="true"
-                    android:gravity="center"
-                    android:layout_width="25dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     tools:targetApi="lollipop">
 
                     <ImageView
@@ -58,13 +44,10 @@
                         android:layout_height="wrap_content"
                         android:src="@drawable/toolbar_button" />
                 </LinearLayout>
-
             </GridLayout>
 
 
-
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
 
