@@ -15,10 +15,51 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:gravity="center"
             android:background="#3F51B5"
+            style="@style/ToolbarStyle"
             app:popupTheme="@style/AppTheme.PopupOverlay">
+
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:columnCount="2"
+                android:paddingRight="7dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/sdfsdf"
+                    style="@style/ToolbarTextStyle"
+                    android:layout_column="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Список покупок"
+                    android:ellipsize="end"
+                    android:layout_gravity="fill_horizontal"
+                    android:singleLine="true"
+                    android:paddingRight="7dp"
+                    android:maxWidth="0dp"/>
+
+
+
+                <LinearLayout
+                    android:layout_column="1"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    tools:targetApi="lollipop">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/toolbar_button" />
+                </LinearLayout>
+
+            </GridLayout>
 
 
 
