@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="footerHeight">85dp</dimen>
-    <dimen name="rightBlockWidth">90dp</dimen>
+    <dimen name="rightBlockWidth">65dp</dimen>
+    <dimen name="containerGroup">125dp</dimen>
 </resources>
