@@ -67,7 +67,7 @@ class Shopin{
     fun listShopinID(){
         val id = Variable.selectGroupID
         val database: SQLiteDatabase = db!!.writableDatabase
-        val cursor: Cursor = database?.query(db?.SHOPIN, null, null, null, null, null, null)
+        val cursor: Cursor = database?.query(db?.SHOPIN, null, "SH_GROUP_ID="+id.toString(), null, null, null, null)
 
         if(cursor.moveToFirst()){
             do {
