@@ -8,13 +8,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firebasemessager.DB
 import com.example.purchase.Dialogs.Group
+import com.example.purchase.Dialogs.Shopin
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private var inputGroup: AlertDialog ?= null
-    private var db: DB? = null
+    private var shopin: Shopin ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +22,13 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(toolbar) //Установить тулбар
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) //Запрет на горизонтальный разворот
-        db = DB(this) //Инициализация экземпляра помощника работы с БД
 
+        shopin = Shopin(this)
 
         //Вызывается метод, выводящий все группы
+
         Group(this, false).listGroups(listGroupsContainer, "first")
+        shopin?.listShopinID()
     }
 
 
@@ -36,10 +38,12 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-
     //Добавление новой группы
     fun addGroup(v: View){
         Group(this)
     }
 
+    fun addShopin(v: View){
+        shopin?.addShopin()
+    }
 }

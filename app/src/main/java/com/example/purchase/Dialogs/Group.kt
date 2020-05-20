@@ -23,6 +23,8 @@ import androidx.core.content.ContextCompat
 import com.example.firebasemessager.DB
 import com.example.purchase.R
 import com.example.purchase.R.drawable
+import com.example.purchase.Variable
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.dialog_add_group.view.*
 
@@ -30,6 +32,7 @@ class Group {
     private var inputGroup: AlertDialog?= null
     private var db: DB? = null
     private var context: Context ?= null
+
 
     //Конструктор для стартового вывода
     constructor(context: Context, type: Boolean){
@@ -111,8 +114,14 @@ class Group {
                 var bg = conGroup.findViewById<LinearLayout>(R.id.bgContainer) as LinearLayout
                 textName.text = cursor.getString(name)
 
-                if(pos=="first" && cursor.position==0) setGroupActive(true, bg)
-                if(pos=="last" && cursor.position==cursor.count-1) setGroupActive(true, bg)
+                if(pos=="first" && cursor.position==0) {
+                    Variable.selectGroupID = cursor.getInt(id)
+                    setGroupActive(true, bg)
+                }
+                if(pos=="last" && cursor.position==cursor.count-1) {
+                    setGroupActive(true, bg)
+                    Variable.selectGroupID = cursor.getInt(id)
+                }
 
                 //Задать событие по нажатию на группу
                 bg.setOnTouchListener(object : View.OnTouchListener{
@@ -151,6 +160,7 @@ class Group {
     }
 
     fun clickGr(id: Int, name: String){
+        Variable.selectGroupID = id
         val title = (context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
         title.setText(name)
