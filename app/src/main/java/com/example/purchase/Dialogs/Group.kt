@@ -15,9 +15,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.example.firebasemessager.DB
@@ -77,14 +75,15 @@ class Group {
                 clearText.visibility = View.VISIBLE
 
             } else {//Если группу можно создавать
-                saveGroup(group)
+
                 inputGroup?.dismiss() //закрывает окно ввода
+                saveGroup(group)
             }
         })
     }
 
     //Процедура сохранения новой группы
-    private fun saveGroup(groupName: String){
+    protected fun saveGroup(groupName: String){
         val database: SQLiteDatabase = db!!.writableDatabase
         val contentValues = ContentValues()
 
@@ -96,8 +95,12 @@ class Group {
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
         view.removeAllViews()
         listGroups(view, "last")
+        Shopin(context!!).listShopinID()
+        val scroll = (context as Activity).findViewById<ScrollView>(R.id.scrollGroup) as ScrollView
+        scroll.fullScroll(ScrollView.FOCUS_DOWN)
     }
 
+    //Вывод списка групп
     @SuppressLint("ResourceAsColor", "ClickableViewAccessibility")
     fun listGroups(view: LinearLayout, pos: String){
         val database: SQLiteDatabase = db!!.writableDatabase
@@ -111,16 +114,24 @@ class Group {
 
                 var conGroup = LayoutInflater.from(context).inflate(R.layout.container_group,null)
                 var textName = conGroup.findViewById<TextView>(R.id.nameGroupField) as TextView
+                var countShopin = conGroup.findViewById<TextView>(R.id.countsShopin) as TextView
                 var bg = conGroup.findViewById<LinearLayout>(R.id.bgContainer) as LinearLayout
                 textName.text = cursor.getString(name)
 
+                countShopin.text = Shopin(context!!).getCountActiveGroup(cursor.getInt(id)).toString()
+
+                val title = (context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView
+                //Если идет загрузка списка после старта приложения
                 if(pos=="first" && cursor.position==0) {
                     Variable.selectGroupID = cursor.getInt(id)
                     setGroupActive(true, bg)
+                    title.setText(cursor.getString(name))
                 }
+                //Если загрузка списка вызывается после создания новой группы
                 if(pos=="last" && cursor.position==cursor.count-1) {
                     setGroupActive(true, bg)
                     Variable.selectGroupID = cursor.getInt(id)
+                    title.setText(cursor.getString(name))
                 }
 
                 //Задать событие по нажатию на группу
@@ -130,6 +141,7 @@ class Group {
                     var delay: Long = 800 //Время ожидания удержания кнопки для опеределения клика или удержания
                     var getName: String = cursor.getString(name)
                     var getId = cursor.getInt(id)
+
                     override fun onTouch(p0: View?, event: MotionEvent?): Boolean {
                         when (event!!.action) {
                             MotionEvent.ACTION_DOWN -> startTime = System.currentTimeMillis() //нажатие
@@ -140,10 +152,12 @@ class Group {
                                     return true
                                 }
                             }
-                            MotionEvent.ACTION_UP,  //Отпускание
-                            MotionEvent.ACTION_CANCEL -> {
+                            //MotionEvent.ACTION_UP,  //Отпускание
+                            MotionEvent.ACTION_UP -> {
                                 current = System.currentTimeMillis() - startTime
                                 if(current<delay){ //Если произошел клик по группе
+                                    var countActive = bg.findViewById<TextView>(R.id.countsShopin) as TextView
+                                    countActive.text = Shopin(context!!).getCountActiveGroup(getId).toString()
                                     clickGr(getId,getName)
                                     setGroupActive(true, bg)
                                 }
@@ -165,14 +179,15 @@ class Group {
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
         title.setText(name)
 
-        val listGroups = ArrayList<EditText>()
-
         for(i in 0 until view.childCount){
             if( view.getChildAt( i ) is LinearLayout){
                 setGroupActive(false, view.getChildAt(i) as LinearLayout)
             }
         }
 
+        val shopin = (context as Activity).findViewById<View>(R.id.shopinContainer) as LinearLayout
+        shopin.removeAllViews()
+        Shopin(context!!).listShopinID()
     }
 
     fun setGroupActive(type: Boolean, view: LinearLayout){

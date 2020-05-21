@@ -24,6 +24,7 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
                     "SH_NAME text NOT NULL, "+
                     "SH_COUNTS integer, "+
                     "SH_COST real, "+
+                    "SH_ACTIVATE integer DEFAULT 0, "+
                     "SH_GROUP_ID, "+
                     "FOREIGN KEY (SH_GROUP_ID) REFERENCES "+GROUPS+"(GROUP_ID) ON DELETE CASCADE)")
     }

@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firebasemessager.DB
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private var shopin: Shopin ?= null
+    private var shopin = Shopin(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,11 +24,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar) //Установить тулбар
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) //Запрет на горизонтальный разворот
 
-        shopin = Shopin(this)
 
         //Вызывается метод, выводящий все группы
-
         Group(this, false).listGroups(listGroupsContainer, "first")
+
+        //Вызывается метод реализующий вывод покупок самой верхней группы
         shopin?.listShopinID()
     }
 
@@ -45,5 +46,9 @@ class MainActivity : AppCompatActivity() {
 
     fun addShopin(v: View){
         shopin?.addShopin()
+    }
+
+    fun topScroll(v: View){
+        scroll.scrollTo(0,0)
     }
 }

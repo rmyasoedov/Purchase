@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shopinRow"
+    android:layout_width="match_parent"
+    android:columnCount="2"
+    android:rowCount="2"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp">
+
+    <FrameLayout
+        android:layout_column="0"
+        android:layout_row="0"
+        android:layout_width="50dp"
+        android:maxWidth="0dp"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/edit"/>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:maxWidth="0dp"
+        android:layout_height="50dp"
+        android:layout_gravity="fill_horizontal"
+        android:orientation="vertical"
+        android:layout_row="0"
+        android:layout_column="1">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:id="@+id/nameShopin"
+                android:layout_gravity="fill_horizontal"
+                android:maxWidth="0dp"
+                android:ellipsize="end"
+                android:paddingRight="5dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:textSize="12sp"
+                android:text="Силовая скамья"
+                android:layout_column="0"/>
+
+            <CheckBox
+                android:id="@+id/activeShopin"
+                android:maxWidth="0dp"
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_column="1"/>
+        </GridLayout>
+
+        <TextView
+            android:id="@+id/paramShopin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:gravity="right"
+            android:paddingRight="5dp"
+            android:text="Ц: 122,00 К: 2 Сум: 244,00"
+            android:textColor="#A9A9A9"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E1E1E1"/>
+
+</GridLayout>
