@@ -50,7 +50,6 @@ class Shopin{
             inputShopin?.dismiss()
         })
 
-
         //Подтверждение покупки
         okButton.setOnClickListener(View.OnClickListener {
             val name: String = nameText.text.toString()
@@ -82,6 +81,8 @@ class Shopin{
         val view = (context as Activity).findViewById<View>(R.id.shopinContainer) as LinearLayout
         view.removeAllViews()
 
+        var b = Shopin(context!!).getSumGroup(id!!)
+
         if(cursor.moveToFirst()){
             do {
                 val shID = cursor.getInt(cursor.getColumnIndex("SH_ID"))
@@ -91,7 +92,7 @@ class Shopin{
                 val shName = cursor.getString(cursor.getColumnIndex("SH_NAME"))
                 val shAct = cursor.getInt(cursor.getColumnIndex("SH_ACTIVATE"))
 
-                Log.i("Tester","Id: "+shID.toString()+"; Name: "+shName+"; Count: "+shCount.toString()+"; cost: "+shCost.toString()+"; grID: "+shGroupID.toString()+"; Act: "+shAct.toString())
+                //Log.i("Tester","Id: "+shID.toString()+"; Name: "+shName+"; Count: "+shCount.toString()+"; cost: "+shCost.toString()+"; grID: "+shGroupID.toString()+"; Act: "+shAct.toString())
 
                 var contShopin = LayoutInflater.from(context).inflate(R.layout.container_shopin,null)
 
@@ -137,6 +138,7 @@ class Shopin{
                         if(text.visibility==View.VISIBLE)
                             text.text = getCountActiveGroup(Variable.selectGroupID!!).toString()
                     }
+                    Shopin(context!!).setTextSum()
                 })
                 //--------------------------------------------------------------------------------------
 
@@ -145,6 +147,7 @@ class Shopin{
             }while (cursor.moveToNext())
             cursor.close()
             db?.close()
+            Shopin(context!!).setTextSum()
         }
     }
     //==============================================================================================
@@ -156,5 +159,34 @@ class Shopin{
         var id = cur.count
         cur.close()
         return id
+    }
+
+    fun getSumGroup(groupID: Int): Float{
+        val database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database?.rawQuery("SELECT SUM(SH_COUNTS*SH_COST) AS sumGr FROM "+db?.SHOPIN+" WHERE SH_GROUP_ID="+
+                groupID, null)
+        cursor.moveToFirst()
+        var f = cursor.getFloat(cursor.getColumnIndex("sumGr"))
+        cursor.close()
+        return f
+    }
+
+    fun getSumActiveGroup(groupID: Int): Float{
+        val database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database?.rawQuery("SELECT SUM(SH_COUNTS*SH_COST) AS sumGr FROM "+
+                db?.SHOPIN+" WHERE SH_GROUP_ID="+groupID+" AND SH_ACTIVATE=1", null)
+        cursor.moveToFirst()
+        var f = cursor.getFloat(cursor.getColumnIndex("sumGr"))
+        cursor.close()
+        return f
+    }
+
+
+    fun setTextSum(){
+        var blockPayments = (context as Activity).findViewById<LinearLayout>(R.id.blockSumm) as LinearLayout
+        var sumActive = blockPayments.findViewById<TextView>(R.id.sumBuyActive) as TextView
+        var sumGroup = blockPayments.findViewById<TextView>(R.id.sumBuy) as TextView
+        sumActive.text = this.getSumActiveGroup(Variable.selectGroupID!!).toString()
+        sumGroup.text = this.getSumGroup(Variable.selectGroupID!!).toString()
     }
 }

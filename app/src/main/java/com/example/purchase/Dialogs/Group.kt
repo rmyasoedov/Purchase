@@ -160,6 +160,7 @@ class Group {
                                     countActive.text = Shopin(context!!).getCountActiveGroup(getId).toString()
                                     clickGr(getId,getName)
                                     setGroupActive(true, bg)
+                                    Shopin(context!!).setTextSum()
                                 }
                             }
                         }
@@ -171,6 +172,8 @@ class Group {
             }while (cursor.moveToNext())
             db?.close()
         }
+
+        Shopin(context!!).setTextSum()
     }
 
     fun clickGr(id: Int, name: String){

@@ -159,6 +159,7 @@
 
 
         <LinearLayout
+            android:id="@+id/blockSumm"
             android:layout_gravity="fill_horizontal"
             android:layout_height="@dimen/footerHeight"
             android:maxWidth="0dp"

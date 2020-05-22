@@ -23,6 +23,7 @@
             android:text="К оплате:"/>
 
         <TextView
+            android:id="@+id/sumBuyActive"
             android:layout_row="0"
             android:layout_column="1"
             android:textColor="#FF367F"
@@ -40,7 +41,6 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/sumBuy"
             android:layout_row="1"
             android:layout_column="0"
             android:layout_width="100dp"
@@ -48,6 +48,7 @@
             android:text="Сумма списка:"/>
 
         <TextView
+            android:id="@+id/sumBuy"
             android:layout_row="1"
             android:layout_column="1"
             android:gravity="center"
