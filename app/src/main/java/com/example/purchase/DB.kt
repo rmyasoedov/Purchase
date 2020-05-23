@@ -15,6 +15,7 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
     val SHOPIN = "SHOPIN"
 
     override fun onCreate(db: SQLiteDatabase?) {
+
         db?.execSQL("CREATE TABLE "+GROUPS+" (" +
                 "GROUP_ID integer primary key, " +
                 "GROUP_NAME text NOT NULL)")
@@ -25,7 +26,7 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
                     "SH_COUNTS integer, "+
                     "SH_COST real, "+
                     "SH_ACTIVATE integer DEFAULT 0, "+
-                    "SH_GROUP_ID, "+
+                    "SH_GROUP_ID integer, "+
                     "FOREIGN KEY (SH_GROUP_ID) REFERENCES "+GROUPS+"(GROUP_ID) ON DELETE CASCADE)")
     }
 
@@ -33,6 +34,26 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         db?.execSQL("drop table if exists "+GROUPS)
         db?.execSQL("drop table if exists "+SHOPIN)
         onCreate(db)
+    }
+
+    override fun onConfigure(db: SQLiteDatabase?) {
+        super.onConfigure(db)
+    }
+
+    override fun onOpen(db: SQLiteDatabase?) {
+        db?.execSQL("PRAGMA foreign_keys = ON;");
+        super.onOpen(db)
+    }
+
+    fun oneval(table: String, field: String, where: String): String{
+        var database = writableDatabase
+        var cursor = database.rawQuery("SELECT "+field+" FROM "+table+" WHERE "+where, null)
+        cursor.moveToFirst()
+        var s: String = cursor.getString(cursor.getColumnIndex(field))
+        cursor.close()
+        database.close()
+        close()
+        return s
     }
 
 }

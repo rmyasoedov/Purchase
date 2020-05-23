@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
 
         //Вызывается метод, выводящий все группы
-        Group(this, false).listGroups(listGroupsContainer, "first")
+        Group(this, false).listGroups(Variable.firstGroup)
 
         //Вызывается метод реализующий вывод покупок самой верхней группы
         shopin?.listShopinID()
@@ -44,7 +44,8 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
             R.id.deleteActiveShopin -> {
-                deleteCheckedShopin()
+                //deleteCheckedShopin()
+                Variable.deleteCheckedShopin(this)
                 return true
             }
         }
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         scroll.scrollTo(0,0)
     }
 
-    fun deleteCheckedShopin(){
+    /*fun deleteCheckedShopin(){
         var msgDialog: AlertDialog
         msgDialog = AlertDialog.Builder(this)
             ?.setTitle("Удаление отмеченных")
@@ -79,9 +80,9 @@ class MainActivity : AppCompatActivity() {
         val positiveButton = msgDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
 
         positiveButton.setOnClickListener(View.OnClickListener {
-            shopin.deleteActiveShopin()
+            shopin.deleteActiveShopin(Variable.selectGroupID!!)
             shopin.listShopinID()
             msgDialog.dismiss()
         })
-    }
+    }*/
 }

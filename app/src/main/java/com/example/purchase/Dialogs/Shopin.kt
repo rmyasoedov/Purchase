@@ -76,12 +76,22 @@ class Shopin{
     fun listShopinID(){
         val id = Variable.selectGroupID
         val database: SQLiteDatabase = db!!.writableDatabase
+        //--------------------------------
+        val cur = database?.rawQuery("SELECT *FROM "+db?.SHOPIN, null)
+        if(cur.moveToNext()){
+            do{
+                Log.i("DB", cur.getString(cur.getColumnIndex("SH_NAME")))
+            }while (cur.moveToNext())
+        }
+
+
+        Log.i("Tester", "Counts: "+cur.count)
+        cur.close()
+        //---------------------------
         val cursor: Cursor = database?.query(db?.SHOPIN, null, "SH_GROUP_ID="+id.toString(), null, null, null, "SH_ACTIVATE")
 
         val view = (context as Activity).findViewById<View>(R.id.shopinContainer) as LinearLayout
         view.removeAllViews()
-
-        var b = Shopin(context!!).getSumGroup(id!!)
 
         if(cursor.moveToFirst()){
             do {
@@ -195,6 +205,10 @@ class Shopin{
 
     //Функция для обновления данных по суммам покупок активной группы
     fun setTextSum(){
+        val database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database?.rawQuery("SELECT GROUP_ID FROM "+db?.GROUPS,null)
+        if(cursor.count==0) return
+
         var blockPayments = (context as Activity).findViewById<LinearLayout>(R.id.blockSumm) as LinearLayout
         var sumActive = blockPayments.findViewById<TextView>(R.id.sumBuyActive) as TextView
         var sumGroup = blockPayments.findViewById<TextView>(R.id.sumBuy) as TextView
@@ -203,7 +217,7 @@ class Shopin{
     }
 
     //Удалить отмеченные покупки выделенной группы
-    fun deleteActiveShopin(){
+    fun deleteActiveShopin(id: Int){
         val database: SQLiteDatabase = db!!.writableDatabase
         database?.delete(db?.SHOPIN,"SH_GROUP_ID="+Variable.selectGroupID+" AND SH_ACTIVATE=1", null)
         database.close()

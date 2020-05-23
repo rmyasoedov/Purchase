@@ -88,14 +88,14 @@ class Group {
         val database: SQLiteDatabase = db!!.writableDatabase
         val contentValues = ContentValues()
 
-        Log.i("Tester","добавляем: "+groupName)
+        //Log.i("Tester","добавляем: "+groupName)
         contentValues.put("GROUP_NAME", groupName)
         database.insert(db?.GROUPS, null, contentValues)
         db?.close()
 
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
         view.removeAllViews()
-        listGroups(view, "last")
+        listGroups("last")
         Shopin(context!!).listShopinID()
         val scroll = (context as Activity).findViewById<ScrollView>(R.id.scrollGroup) as ScrollView
         scroll.fullScroll(ScrollView.FOCUS_DOWN)
@@ -103,9 +103,11 @@ class Group {
 
     //Вывод списка групп
     @SuppressLint("ResourceAsColor", "ClickableViewAccessibility")
-    fun listGroups(view: LinearLayout, pos: String){
+    fun listGroups(pos: String){
         val database: SQLiteDatabase = db!!.writableDatabase
         val cursor: Cursor = database?.query(db?.GROUPS, null, null, null, null, null, null)
+        var view = (context as Activity).findViewById<LinearLayout>(R.id.listGroupsContainer) as LinearLayout
+        view.removeAllViews()
 
         if(cursor.moveToFirst()){
             do{
@@ -123,13 +125,13 @@ class Group {
 
                 val title = (context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView
                 //Если идет загрузка списка после старта приложения
-                if(pos=="first" && cursor.position==0) {
+                if(pos==Variable.firstGroup && cursor.position==0) {
                     Variable.selectGroupID = cursor.getInt(id)
                     setGroupActive(true, bg)
                     title.setText(cursor.getString(name))
                 }
                 //Если загрузка списка вызывается после создания новой группы
-                if(pos=="last" && cursor.position==cursor.count-1) {
+                if(pos==Variable.lastGroup && cursor.position==cursor.count-1) {
                     setGroupActive(true, bg)
                     Variable.selectGroupID = cursor.getInt(id)
                     title.setText(cursor.getString(name))
@@ -139,7 +141,7 @@ class Group {
                 bg.setOnTouchListener(object : View.OnTouchListener{
                     var startTime: Long = 0
                     var current: Long = 0
-                    var delay: Long = 800 //Время ожидания удержания кнопки для опеределения клика или удержания
+                    var delay: Long = 700 //Время ожидания удержания кнопки для опеределения клика или удержания
                     var getName: String = cursor.getString(name)
                     var getId = cursor.getInt(id)
 
@@ -150,7 +152,7 @@ class Group {
                                 current = System.currentTimeMillis() - startTime
                                 if(current>=delay && boolDelay==false){ //Если произошло удержание
                                     boolDelay = true //параметр, чтобы не прослушивать больше зажатие
-                                    popupMenuShow(getId)
+                                    popupMenuShow(getId, p0 as LinearLayout)
                                     return true
                                 }
                             }
@@ -169,9 +171,9 @@ class Group {
                         return true
                     }
                 })
-
                 view.addView(conGroup)
             }while (cursor.moveToNext())
+            cursor.close()
             db?.close()
         }
 
@@ -182,7 +184,8 @@ class Group {
         Variable.selectGroupID = id
         val title = (context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
-        title.setText(name)
+
+        title.setText(db?.oneval(db?.GROUPS.toString(), "GROUP_NAME", "GROUP_ID="+id))
 
         for(i in 0 until view.childCount){
             if( view.getChildAt( i ) is LinearLayout){
@@ -211,7 +214,7 @@ class Group {
         }
     }
 
-    fun popupMenuShow(groupID: Int){
+    fun popupMenuShow(groupID: Int, view: LinearLayout){
         val menuItem = arrayOf(
             "Изменить",
             "Удалить группу",
@@ -222,13 +225,14 @@ class Group {
 
         var builder: AlertDialog
         builder = AlertDialog.Builder(this.context!!)
-            ?.setTitle("Выберите ")
+            ?.setTitle("Выберите режим("+
+                    db?.oneval(db?.GROUPS.toString(),"GROUP_NAME", "GROUP_ID="+groupID)+")")
             ?.setItems(menuItem){dialog, which ->
 
                 when(menuItem[which]){
-                    "Изменить"->{}
-                    "Удалить группу"->{}
-                    "Удалить отмеченные"->{}
+                    "Изменить"->{this.editGroupName(groupID, view)}
+                    "Удалить группу"->{this.deleteGroup(groupID)}
+                    "Удалить отмеченные"->{Variable.deleteCheckedShopin(context!!)}
                     "Поделиться списком"->{}
                     "Поделиться простым списком"->{}
                     "Отмена"->{}
@@ -238,6 +242,92 @@ class Group {
 
         builder.setOnDismissListener {
             this.boolDelay = false
+        }
+    }
+
+    fun deleteGroup(groupID: Int){
+        var database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database?.rawQuery("SELECT GROUP_NAME FROM "+ db?.GROUPS+" WHERE GROUP_ID="+groupID, null)
+        cursor.moveToFirst()
+
+
+        var msgDialog: AlertDialog
+        msgDialog = AlertDialog.Builder(context!!)
+            ?.setTitle("Удалить группу "+cursor.getString(cursor.getColumnIndex("GROUP_NAME")))
+            ?.setMessage("Подтверждаете удаление?")
+            ?.setPositiveButton("ДА - УДАЛИТЬ", null)
+            ?.setNegativeButton("ОТМЕНА", null)
+            ?.show()!!
+
+        val positiveButton = msgDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        positiveButton.setOnClickListener(View.OnClickListener {
+            var database: SQLiteDatabase = db!!.writableDatabase
+            database.delete(db?.GROUPS, "GROUP_ID="+groupID, null)
+            listGroups(Variable.firstGroup)
+            Shopin(context!!).listShopinID()
+            database.close()
+            msgDialog.dismiss()
+        })
+        database.close()
+        cursor.close()
+    }
+
+
+    fun editGroupName(groupID: Int, view: LinearLayout){
+        var mDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_group,null)
+        var text = mDialogView.nameNewGroup
+        var clear = mDialogView.clearFieldInputGroup
+        var database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database.rawQuery("SELECT GROUP_NAME FROM "+db?.GROUPS+" WHERE GROUP_ID="+groupID, null)
+        cursor.moveToFirst()
+        text.setText(cursor.getString(cursor.getColumnIndex("GROUP_NAME")))
+        var builder: AlertDialog
+
+        builder = AlertDialog.Builder(context!!)
+            ?.setTitle("Введите наименование группы")
+            ?.setMessage("Имя группы")
+            ?.setView(mDialogView)
+            ?.setPositiveButton("ОК", null)
+            ?.setNegativeButton("ОТМЕНА", null)
+            ?.show()!!
+
+        cursor.close()
+
+
+        var okButton = builder.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        val contentValues = ContentValues()
+
+        okButton.setOnClickListener(View.OnClickListener {
+            var newName = text.text.toString()
+
+            if(newName.length==0){
+                clear.visibility = View.VISIBLE
+            } else{
+                contentValues.clear()
+                contentValues.put("GROUP_NAME", newName)
+                database.update(db?.GROUPS, contentValues, "GROUP_ID="+groupID, null)
+                val groupNameField = view.findViewById<TextView>(R.id.nameGroupField) as TextView
+                groupNameField.setText(newName)
+                this.clickGr(groupID, newName)
+                setGroupActive(true, view)
+                builder.dismiss()
+            }
+
+        })
+
+        clear.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                clear.visibility = View.INVISIBLE
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
+
+        builder.setOnDismissListener {
+            database.close()
+            db?.close()
         }
     }
 
