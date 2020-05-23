@@ -16,6 +16,7 @@
         android:title="Очистить всё"/>
 
     <item
+        android:id="@+id/deleteActiveShopin"
         android:title="Удалить отмеченные"/>
 
     <item

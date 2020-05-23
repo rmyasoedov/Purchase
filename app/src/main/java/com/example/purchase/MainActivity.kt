@@ -2,7 +2,9 @@ package com.example.purchase
 
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
@@ -39,16 +41,47 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId){
+            R.id.deleteActiveShopin -> {
+                deleteCheckedShopin()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     //Добавление новой группы
     fun addGroup(v: View){
         Group(this)
     }
 
+    //Добавить новую покупку
     fun addShopin(v: View){
         shopin?.addShopin()
     }
 
+    //Переместиться вверх по списку покупок
     fun topScroll(v: View){
         scroll.scrollTo(0,0)
+    }
+
+    fun deleteCheckedShopin(){
+        var msgDialog: AlertDialog
+        msgDialog = AlertDialog.Builder(this)
+            ?.setTitle("Удаление отмеченных")
+            ?.setMessage("Помеченные покупки будут удалены")
+            ?.setPositiveButton("ДА - УДАЛИТЬ", null)
+            ?.setNegativeButton("ОТМЕНА", null)
+            ?.show()!!
+
+        val positiveButton = msgDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
+
+        positiveButton.setOnClickListener(View.OnClickListener {
+            shopin.deleteActiveShopin()
+            shopin.listShopinID()
+            msgDialog.dismiss()
+        })
     }
 }

@@ -94,16 +94,23 @@ class Shopin{
 
                 //Log.i("Tester","Id: "+shID.toString()+"; Name: "+shName+"; Count: "+shCount.toString()+"; cost: "+shCost.toString()+"; grID: "+shGroupID.toString()+"; Act: "+shAct.toString())
 
+                //создать блок-контейнер для добавления в список покупок
                 var contShopin = LayoutInflater.from(context).inflate(R.layout.container_shopin,null)
 
                 val nameShopin = contShopin.nameShopin
                 val paramShopin = contShopin.paramShopin
                 val row = contShopin.shopinRow
                 val check = contShopin.activeShopin
+                val editShopin = contShopin.editShopin
 
                 check.isChecked = if(shAct==0) false else true
                 nameShopin.setText(shName)
                 paramShopin.setText("Ц: "+shCost+" К: "+shCount+" Сум: "+(shCost*shCount))
+
+                //Нажатие на кнопку редактирования покупки
+                editShopin.setOnClickListener(View.OnClickListener {
+                    this.editShopinDialog(shID)
+                })
 
 
                 //Обработчик нажатия строки покупки------------------------------------------------------
@@ -139,6 +146,7 @@ class Shopin{
                             text.text = getCountActiveGroup(Variable.selectGroupID!!).toString()
                     }
                     Shopin(context!!).setTextSum()
+                    database.close()
                 })
                 //--------------------------------------------------------------------------------------
 
@@ -152,6 +160,7 @@ class Shopin{
     }
     //==============================================================================================
 
+    //Функция для получения количества отмеченных покупок активной группы
     fun getCountActiveGroup(groupID: Int): Int{
         val database: SQLiteDatabase = db!!.writableDatabase
         var cur = database?.rawQuery("SELECT SH_ID FROM "+db?.SHOPIN+" WHERE SH_GROUP_ID="+
@@ -161,6 +170,7 @@ class Shopin{
         return id
     }
 
+    //Функция для получения суммы всех покупок активной группы
     fun getSumGroup(groupID: Int): Float{
         val database: SQLiteDatabase = db!!.writableDatabase
         var cursor = database?.rawQuery("SELECT SUM(SH_COUNTS*SH_COST) AS sumGr FROM "+db?.SHOPIN+" WHERE SH_GROUP_ID="+
@@ -171,6 +181,7 @@ class Shopin{
         return f
     }
 
+    //Функция для получения суммы всех отмеченных покупок активной группы
     fun getSumActiveGroup(groupID: Int): Float{
         val database: SQLiteDatabase = db!!.writableDatabase
         var cursor = database?.rawQuery("SELECT SUM(SH_COUNTS*SH_COST) AS sumGr FROM "+
@@ -178,15 +189,81 @@ class Shopin{
         cursor.moveToFirst()
         var f = cursor.getFloat(cursor.getColumnIndex("sumGr"))
         cursor.close()
+        database.close()
         return f
     }
 
-
+    //Функция для обновления данных по суммам покупок активной группы
     fun setTextSum(){
         var blockPayments = (context as Activity).findViewById<LinearLayout>(R.id.blockSumm) as LinearLayout
         var sumActive = blockPayments.findViewById<TextView>(R.id.sumBuyActive) as TextView
         var sumGroup = blockPayments.findViewById<TextView>(R.id.sumBuy) as TextView
         sumActive.text = this.getSumActiveGroup(Variable.selectGroupID!!).toString()
         sumGroup.text = this.getSumGroup(Variable.selectGroupID!!).toString()
+    }
+
+    //Удалить отмеченные покупки выделенной группы
+    fun deleteActiveShopin(){
+        val database: SQLiteDatabase = db!!.writableDatabase
+        database?.delete(db?.SHOPIN,"SH_GROUP_ID="+Variable.selectGroupID+" AND SH_ACTIVATE=1", null)
+        database.close()
+    }
+
+    //Удалить покупку
+    fun deleteShopinID(id: Int){
+        val database: SQLiteDatabase = db!!.writableDatabase
+        database?.delete(db?.SHOPIN,"SH_ID="+id, null)
+        database.close()
+    }
+
+    //Редактирование покупки
+    fun editShopinDialog(id: Int){
+        val database: SQLiteDatabase = db!!.writableDatabase
+        var cursor = database?.rawQuery("SELECT *FROM "+db?.SHOPIN+" WHERE SH_ID="+id, null)
+        cursor.moveToFirst()
+
+        var editShopin: AlertDialog
+        var mDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_shopin,null)
+
+        var deleteButton = mDialogView.deleteShopin
+        var cancelButton = mDialogView.cancelShopinForm
+        var okButton = mDialogView.okShopinForm
+        var nameText = mDialogView.nameShopinText
+        var countText = mDialogView.countShopinText
+        var costText = mDialogView.costShopinText
+
+        deleteButton.visibility = View.VISIBLE
+        nameText.setText(cursor.getString(cursor.getColumnIndex("SH_NAME")))
+        countText.setText(cursor.getInt(cursor.getColumnIndex("SH_COUNTS")).toString())
+        costText.setText(cursor.getFloat(cursor.getColumnIndex("SH_COST")).toString())
+
+        editShopin = AlertDialog.Builder(this.context!!)
+            ?.setView(mDialogView)
+            ?.show()!!
+
+
+        okButton.setOnClickListener(View.OnClickListener {
+            val database: SQLiteDatabase = db!!.writableDatabase
+            val contentValues = ContentValues()
+            contentValues.put("SH_NAME", nameText.text.toString())
+            contentValues.put("SH_COUNTS", countText.text.toString())
+            contentValues.put("SH_COST", costText.text.toString())
+            database?.update(db?.SHOPIN,contentValues, "SH_ID="+id, null)
+            editShopin.dismiss()
+            listShopinID()
+        })
+
+        deleteButton.setOnClickListener(View.OnClickListener {
+            deleteShopinID(id)
+            listShopinID()
+            editShopin.dismiss()
+        })
+
+        cancelButton.setOnClickListener(View.OnClickListener {
+            editShopin.dismiss()
+        })
+
+        cursor.close()
+        database.close()
     }
 }

@@ -30,6 +30,7 @@ class Group {
     private var inputGroup: AlertDialog?= null
     private var db: DB? = null
     private var context: Context ?= null
+    protected var boolDelay = false
 
 
     //Конструктор для стартового вывода
@@ -147,15 +148,16 @@ class Group {
                             MotionEvent.ACTION_DOWN -> startTime = System.currentTimeMillis() //нажатие
                             MotionEvent.ACTION_MOVE -> {
                                 current = System.currentTimeMillis() - startTime
-                                if(current>=delay){ //Если произошло удержание
-                                    Log.i("Tester", "Это удержание")
+                                if(current>=delay && boolDelay==false){ //Если произошло удержание
+                                    boolDelay = true //параметр, чтобы не прослушивать больше зажатие
+                                    popupMenuShow(getId)
                                     return true
                                 }
                             }
                             //MotionEvent.ACTION_UP,  //Отпускание
                             MotionEvent.ACTION_UP -> {
                                 current = System.currentTimeMillis() - startTime
-                                if(current<delay){ //Если произошел клик по группе
+                                if(current<delay || boolDelay==true){ //Если произошел клик по группе
                                     var countActive = bg.findViewById<TextView>(R.id.countsShopin) as TextView
                                     countActive.text = Shopin(context!!).getCountActiveGroup(getId).toString()
                                     clickGr(getId,getName)
@@ -206,6 +208,36 @@ class Group {
             text.setTextColor(ContextCompat.getColor(context!!, R.color.colorAccent))
             text.setTypeface(null, Typeface.BOLD)
             count.visibility = View.VISIBLE
+        }
+    }
+
+    fun popupMenuShow(groupID: Int){
+        val menuItem = arrayOf(
+            "Изменить",
+            "Удалить группу",
+            "Удалить отмеченные",
+            "Поделиться списком",
+            "Поделиться простым списком",
+            "Отмена")
+
+        var builder: AlertDialog
+        builder = AlertDialog.Builder(this.context!!)
+            ?.setTitle("Выберите ")
+            ?.setItems(menuItem){dialog, which ->
+
+                when(menuItem[which]){
+                    "Изменить"->{}
+                    "Удалить группу"->{}
+                    "Удалить отмеченные"->{}
+                    "Поделиться списком"->{}
+                    "Поделиться простым списком"->{}
+                    "Отмена"->{}
+                }
+            }!!.show()
+
+
+        builder.setOnDismissListener {
+            this.boolDelay = false
         }
     }
 
