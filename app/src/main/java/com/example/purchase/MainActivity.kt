@@ -1,5 +1,6 @@
 package com.example.purchase
 
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
@@ -47,6 +48,11 @@ class MainActivity : AppCompatActivity() {
                 //deleteCheckedShopin()
                 Variable.deleteCheckedShopin(this)
                 return true
+            }
+
+            R.id.annotationClick ->{
+                val intent = Intent(this,AnnotationActivity::class.java)
+                startActivity(intent)
             }
         }
 

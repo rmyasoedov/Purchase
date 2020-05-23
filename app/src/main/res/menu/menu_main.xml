@@ -20,6 +20,7 @@
         android:title="Удалить отмеченные"/>
 
     <item
+        android:id="@+id/annotationClick"
         android:title="Покупки"/>
 
     <item
