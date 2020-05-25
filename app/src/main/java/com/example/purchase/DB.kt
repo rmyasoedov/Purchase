@@ -6,13 +6,14 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.purchase.MainActivity
 
-private val DATABASE_VERSION = 1
+private val DATABASE_VERSION = 4
 private val DATABASE_NAME = "Purchase"
 
 class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, DATABASE_VERSION) {
 
     val GROUPS = "GROUPS"
     val SHOPIN = "SHOPIN"
+    val ANNOT = "ANNOTATIONS"
 
     override fun onCreate(db: SQLiteDatabase?) {
 
@@ -28,11 +29,31 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
                     "SH_ACTIVATE integer DEFAULT 0, "+
                     "SH_GROUP_ID integer, "+
                     "FOREIGN KEY (SH_GROUP_ID) REFERENCES "+GROUPS+"(GROUP_ID) ON DELETE CASCADE)")
+
+        db?.execSQL("CREATE TABLE "+ANNOT+" ("+
+                    "ANNOT_ID INTEGER PRIMARY KEY, "+
+                    "ANNOT_NAME TEXT NOT NULL, "+
+                    "ANNOT_COST REAL)")
+
+        db?.execSQL("CREATE TRIGGER ADD_ANNOTATIONS_INSERT AFTER INSERT "+
+                        "ON "+SHOPIN+
+                        " BEGIN "+
+                        "INSERT INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
+                        "END;")
+
+        db?.execSQL("CREATE TRIGGER ADD_ANNOTATIONS_UPDATE AFTER UPDATE "+
+                "ON "+SHOPIN+
+                " BEGIN "+
+                "INSERT INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
+                "END;")
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
         db?.execSQL("drop table if exists "+GROUPS)
         db?.execSQL("drop table if exists "+SHOPIN)
+        db?.execSQL("drop table if exists "+ANNOT)
+        db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_INSERT")
+        db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_UPDATE")
         onCreate(db)
     }
 

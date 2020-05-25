@@ -75,19 +75,19 @@
                 android:layout_height="wrap_content">
 
 
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
-                <include layout="@layout/container_anotation"/>
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
+<!--                <include layout="@layout/container_anotation"/>-->
 
             </LinearLayout>
 
