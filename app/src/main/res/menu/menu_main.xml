@@ -25,5 +25,6 @@
         android:title="Покупки"/>
 
     <item
+        android:id="@+id/about"
         android:title="О программе"/>
 </menu>

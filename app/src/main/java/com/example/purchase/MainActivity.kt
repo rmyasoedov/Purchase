@@ -70,6 +70,11 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
 
+            R.id.about->{
+                val intent = Intent(this,AboutActivity::class.java)
+                startActivity(intent)
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
