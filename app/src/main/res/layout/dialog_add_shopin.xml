@@ -22,6 +22,7 @@
             android:visibility="invisible"
             android:layout_width="45dp"
             android:layout_gravity="right"
+            android:background="@drawable/stroke_bk_black"
             android:layout_height="40dp">
 
             <TextView
@@ -95,14 +96,17 @@
 
         <Button
             android:id="@+id/okShopinForm"
-            android:layout_width="140dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/stroke_bk_black"
             android:text="Ok"/>
 
         <Button
             android:id="@+id/cancelShopinForm"
-            android:layout_width="140dp"
+            android:layout_width="130dp"
+            android:layout_marginLeft="15dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/stroke_bk_black"
             android:text="ОТМЕНА"/>
 
     </LinearLayout>

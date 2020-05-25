@@ -16,12 +16,13 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="X"
+            android:background="@drawable/stroke_bk_black"
 
             android:textColor="#ff0000"
-            android:textSize="26sp"/>
+            android:textSize="24sp"/>
     </LinearLayout>
 
 
@@ -75,13 +76,17 @@
 
         <Button
             android:id="@+id/okAnnot"
-            android:layout_width="wrap_content"
+            android:background="@drawable/stroke_bk_black"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:text="OK"/>
 
         <Button
+
             android:id="@+id/cancelAnnot"
-            android:layout_width="wrap_content"
+            android:background="@drawable/stroke_bk_black"
+            android:layout_width="130dp"
+            android:layout_marginLeft="10dp"
             android:layout_height="wrap_content"
             android:text="ОТМЕНА"/>
 
