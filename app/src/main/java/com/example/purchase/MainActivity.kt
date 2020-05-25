@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.firebasemessager.DB
@@ -19,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private var shopin = Shopin(this)
+    var db = DB(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +59,17 @@ class MainActivity : AppCompatActivity() {
                 menuClearAll()
                 return true
             }
+
+            R.id.share -> {
+                clickShare()
+                return true
+            }
+
+            R.id.shareList ->{
+                shareEasyList()
+                return true
+            }
+
         }
 
         return super.onOptionsItemSelected(item)
@@ -95,5 +106,51 @@ class MainActivity : AppCompatActivity() {
             Group(this, false).deleteAllGroups()
             builder.dismiss()
         })
+    }
+
+    fun clickShare(){
+
+        var database = db?.writableDatabase
+        var cursor = database?.rawQuery("select *from "+db?.ANNOT+" order by ANNOT_NAME", null)
+
+        var str = "мой список\n"
+        if(cursor?.moveToFirst()!!){
+            do{
+                str = str+" "+cursor.getString(cursor.getColumnIndex("ANNOT_NAME"))+"   Ц: "+
+                        cursor.getFloat(cursor.getColumnIndex("ANNOT_COST"))+"=\n"
+            }while (cursor?.moveToNext())
+        }
+        str+="Пожалуйста, вот мой список :)"
+        Variable.Share(str, this)
+        cursor.close()
+        database.close()
+    }
+
+    fun shareEasyList(){
+        var database = db?.writableDatabase
+        var cursor = database?.rawQuery("select sh.SH_NAME as NAME, " +
+                "                                           sh.SH_COUNTS as COUNTS, " +
+                "                                           sh.SH_COST as COST, " +
+                "                                           (sh.SH_COST*sh.SH_COUNTS) AS SUMMA, " +
+                "                                           SH_ACTIVATE as ACTIVATE," +
+                "                                            gr.GROUP_NAME AS GROUPP " +
+                "                                           FROM "+db.SHOPIN+" sh, "+db.GROUPS+" gr WHERE sh.SH_GROUP_ID=gr.GROUP_ID", null)
+
+        var str = "Список покупок\n"
+        if(cursor?.moveToFirst()!!){
+            do{
+                Log.i("Tester", cursor.getString(cursor.getColumnIndex("NAME"))+" "+cursor.getString(cursor.getColumnIndex("SUMMA"))+" "+cursor.getString(cursor.getColumnIndex("GROUPP")))
+
+                var activ = if(cursor.getInt(cursor.getColumnIndex("ACTIVATE"))==0) " " else "+"
+
+                str=str+"`"+cursor.getString(cursor.getColumnIndex("NAME"))+"  `   Q:"+
+                            cursor.getString(cursor.getColumnIndex("COUNTS"))+
+                            "  ` P:"+cursor.getString(cursor.getColumnIndex("COST"))+
+                            "  ` S:"+cursor.getString(cursor.getColumnIndex("SUMMA"))+
+                            " `"+activ+" `"+cursor.getString(cursor.getColumnIndex("GROUPP"))+" `\n"
+            }while (cursor.moveToNext())
+        }
+        str+="Пожалуйста, вот мой список :)"
+        Variable.Share(str, this)
     }
 }

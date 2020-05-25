@@ -5,7 +5,7 @@
     tools:context="com.example.contextmenu.MainActivity">
 
     <item
-        android:id="@+id/options"
+        android:id="@+id/shareList"
         android:title="Поделиться списком"/>
 
     <item

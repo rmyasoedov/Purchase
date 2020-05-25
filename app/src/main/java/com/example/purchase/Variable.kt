@@ -1,9 +1,11 @@
 package com.example.purchase
 
 import android.content.Context
+import android.content.Intent
 import android.database.sqlite.SQLiteDatabase
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.startActivity
 import com.example.firebasemessager.DB
 import com.example.purchase.Dialogs.Group
 import com.example.purchase.Dialogs.Shopin
@@ -31,4 +33,11 @@ object Variable {
         })
     }
 
+    fun Share(str: String, context: Context){
+        val sendIntent = Intent()
+        sendIntent.action = Intent.ACTION_SEND
+        sendIntent.putExtra(Intent.EXTRA_TEXT, str)
+        sendIntent.type = "text/plain"
+        context.startActivity(Intent.createChooser(sendIntent, "Поделиться"))
+    }
 }
