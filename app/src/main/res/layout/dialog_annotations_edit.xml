@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="7dp"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingBottom="20dp"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+
+        android:gravity="right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X"
+
+            android:textColor="#ff0000"
+            android:textSize="26sp"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <EditText
+            android:id="@+id/editName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="22sp"
+            android:hint="Наименование покупки"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content">
+
+
+            <EditText
+                android:id="@+id/editCost"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:inputType="numberDecimal"
+                android:hint="Цена"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/okAnnot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"/>
+
+        <Button
+            android:id="@+id/cancelAnnot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ОТМЕНА"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -13,6 +13,7 @@
         android:layout_height="wrap_content">
 
         <FrameLayout
+            android:id="@+id/editClick"
             android:layout_column="0"
             android:layout_width="70dp"
             android:layout_height="wrap_content">
