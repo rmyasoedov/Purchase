@@ -13,6 +13,7 @@
         android:title="Поделиться простым списком"/>
 
     <item
+        android:id="@+id/clearAll"
         android:title="Очистить всё"/>
 
     <item

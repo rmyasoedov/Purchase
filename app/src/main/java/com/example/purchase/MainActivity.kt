@@ -54,6 +54,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this,AnnotationActivity::class.java)
                 startActivity(intent)
             }
+
+            R.id.clearAll ->{
+                menuClearAll()
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -74,21 +79,21 @@ class MainActivity : AppCompatActivity() {
         scroll.scrollTo(0,0)
     }
 
-    /*fun deleteCheckedShopin(){
-        var msgDialog: AlertDialog
-        msgDialog = AlertDialog.Builder(this)
-            ?.setTitle("Удаление отмеченных")
-            ?.setMessage("Помеченные покупки будут удалены")
-            ?.setPositiveButton("ДА - УДАЛИТЬ", null)
+
+    fun menuClearAll(){
+        var builder: AlertDialog
+        builder = AlertDialog.Builder(this)
+            ?.setTitle("Удаление")
+            ?.setMessage("Список будет очищен!")
+            ?.setPositiveButton("ДА ОЧИСТИТЬ", null)
             ?.setNegativeButton("ОТМЕНА", null)
             ?.show()!!
 
-        val positiveButton = msgDialog?.getButton(AlertDialog.BUTTON_POSITIVE)
+        var okButton = builder.getButton(AlertDialog.BUTTON_POSITIVE)
 
-        positiveButton.setOnClickListener(View.OnClickListener {
-            shopin.deleteActiveShopin(Variable.selectGroupID!!)
-            shopin.listShopinID()
-            msgDialog.dismiss()
+        okButton.setOnClickListener(View.OnClickListener {
+            Group(this, false).deleteAllGroups()
+            builder.dismiss()
         })
-    }*/
+    }
 }

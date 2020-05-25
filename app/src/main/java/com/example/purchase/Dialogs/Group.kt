@@ -331,4 +331,16 @@ class Group {
         }
     }
 
+    fun deleteAllGroups(){
+        var database = db?.writableDatabase
+        database?.delete(db?.GROUPS,null, null)
+        database?.close()
+        var view = (context as Activity).findViewById<LinearLayout>(R.id.listGroupsContainer) as LinearLayout
+        view.removeAllViews()
+
+        var listShoppin = (context as Activity).findViewById<LinearLayout>(R.id.shopinContainer) as LinearLayout
+        listShoppin.removeAllViews()
+
+        ((context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView).setText("Список покупок")
+    }
 }

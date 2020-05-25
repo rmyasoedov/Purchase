@@ -44,6 +44,11 @@
         <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="rightClear" parent="RightBip">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:paddingTop">5dp</item>
+    </style>
+
     <style name="MainGrid">
 
     </style>

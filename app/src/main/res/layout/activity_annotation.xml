@@ -29,32 +29,34 @@
                     android:id="@+id/groupNameTitle"
                     style="@style/ToolbarTextStyle"
                     android:layout_column="0"
-                    android:layout_marginTop="10dp"
                     android:singleLine="true"
                     android:text="Список покупок"
                     android:layout_gravity="fill_horizontal"/>
 
                 <LinearLayout
+                    style="@style/rightClear"
                     android:layout_column="1"
                     tools:targetApi="lollipop">
 
-                    <Button
+                    <TextView
                         android:layout_width="wrap_content"
+                        android:textColor="#fff"
                         android:layout_height="wrap_content"
-                        android:text="очистить"/>
-
+                        android:text="ОЧИСТИТЬ"/>
                 </LinearLayout>
             </GridLayout>
+
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
-
     <LinearLayout
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@drawable/background_repeat">
 
         <TextView
+            android:textColor="#9B9B9B"
             android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +71,7 @@
                 android:id="@+id/listAnotation"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
-                android:paddingTop="15dp"
+                android:paddingTop="25dp"
                 android:layout_height="wrap_content">
 
 
