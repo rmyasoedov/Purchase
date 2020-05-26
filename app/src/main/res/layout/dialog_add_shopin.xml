@@ -44,7 +44,7 @@
         android:layout_height="wrap_content">
 
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/nameShopinText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

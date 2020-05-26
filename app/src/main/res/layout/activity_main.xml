@@ -53,7 +53,6 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <GridLayout
         style="@style/MainGrid"
         android:layout_width="match_parent"
@@ -81,6 +80,8 @@
                 android:orientation="vertical"
                 android:layoutAnimation="@anim/animation_slide"
                 android:layout_height="wrap_content">
+
+
 
 <!--                <include layout="@layout/container_shopin"/>-->
 <!--                <include layout="@layout/container_shopin"/>-->

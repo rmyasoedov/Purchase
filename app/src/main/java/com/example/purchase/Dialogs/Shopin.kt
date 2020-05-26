@@ -8,14 +8,13 @@ import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.example.firebasemessager.DB
 import com.example.purchase.R
+import com.example.purchase.ShoppinAdapter
 import com.example.purchase.Variable
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.container_shopin.view.*
 import kotlinx.android.synthetic.main.dialog_add_shopin.view.*
 
@@ -45,6 +44,16 @@ class Shopin{
         var nameText = mDialogView.nameShopinText
         var countText = mDialogView.countShopinText
         var costText = mDialogView.costShopinText
+
+        var adapter = ShoppinAdapter(context!!, R.layout.autocomplete, Variable.getListAnnotShoppin(context!!))
+        nameText.setAdapter(adapter)
+
+        nameText.onItemClickListener =
+            AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                var cost = (view.findViewById<TextView>(R.id.annotCost) as TextView).text.toString()
+                costText.setText(cost)
+            }
+
 
         cancel.setOnClickListener(View.OnClickListener {
             inputShopin?.dismiss()
@@ -245,6 +254,15 @@ class Shopin{
         var nameText = mDialogView.nameShopinText
         var countText = mDialogView.countShopinText
         var costText = mDialogView.costShopinText
+
+        var adapter = ShoppinAdapter(context!!, R.layout.autocomplete, Variable.getListAnnotShoppin(context!!))
+        nameText.setAdapter(adapter)
+
+        nameText.onItemClickListener =
+            AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                var cost = (view.findViewById<TextView>(R.id.annotCost) as TextView).text.toString()
+                costText.setText(cost)
+            }
 
         deleteButton.visibility = View.VISIBLE
         nameText.setText(cursor.getString(cursor.getColumnIndex("SH_NAME")))

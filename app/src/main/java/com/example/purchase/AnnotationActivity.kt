@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -67,6 +68,15 @@ class AnnotationActivity : AppCompatActivity() {
 
         var textName = dialogAnnot.editName
         var costText = dialogAnnot.editCost
+
+        var adapter = ShoppinAdapter(this, R.layout.autocomplete, Variable.getListAnnotShoppin(this))
+        textName.setAdapter(adapter)
+
+        textName.onItemClickListener =
+            AdapterView.OnItemClickListener { adapterView, view, position, id ->
+                var cost = (view.findViewById<TextView>(R.id.annotCost) as TextView).text.toString()
+                costText.setText(cost)
+            }
 
         var nameAnnot: TextView = view.findViewById(R.id.annot_name) as TextView
         var costAnnot: TextView = view.findViewById(R.id.annot_cost) as TextView

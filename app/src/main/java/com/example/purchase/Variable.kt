@@ -40,4 +40,24 @@ object Variable {
         sendIntent.type = "text/plain"
         context.startActivity(Intent.createChooser(sendIntent, "Поделиться"))
     }
+
+    fun getListAnnotShoppin(context: Context): ArrayList<ShoppinList>{
+        var list: ArrayList<ShoppinList> ?= ArrayList()
+        var db = DB(context)
+
+        var database = db?.writableDatabase
+        var cursor = database.rawQuery("SELECT *from "+db?.ANNOT+" ORDER BY ANNOT_NAME", null)
+
+        if(cursor.moveToFirst()){
+            do{
+                val name = cursor.getString(cursor.getColumnIndex("ANNOT_NAME"))
+                val cost = cursor.getString(cursor.getColumnIndex("ANNOT_COST"))
+                list?.add(ShoppinList(name,cost))
+            }while (cursor.moveToNext())
+        }
+        cursor.close()
+        database.close()
+
+        return list!!
+    }
 }
