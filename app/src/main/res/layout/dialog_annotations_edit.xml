@@ -16,6 +16,7 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/deleteAnnot"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:text="X"

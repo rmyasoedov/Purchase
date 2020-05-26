@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.purchase.MainActivity
+import java.lang.Exception
 
 private val DATABASE_VERSION = 4
 private val DATABASE_NAME = "Purchase"
@@ -75,6 +76,17 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         database.close()
         close()
         return s
+    }
+
+    fun deleteRow(table: String, where: String): Boolean{
+        try {
+           var database = writableDatabase
+            database.delete(table,where, null)
+        }catch (e: Exception){
+            Log.i("Info", "Delete Error: "+e.toString())
+            return false
+        }
+        return true
     }
 
 }

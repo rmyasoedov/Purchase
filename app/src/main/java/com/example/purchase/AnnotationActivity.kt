@@ -1,20 +1,21 @@
 package com.example.purchase
 
 import android.content.ContentValues
-import android.content.DialogInterface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.example.firebasemessager.DB
 import kotlinx.android.synthetic.main.activity_annotation.*
 import kotlinx.android.synthetic.main.container_anotation.view.*
 import kotlinx.android.synthetic.main.dialog_annotations_edit.view.*
+
 
 class AnnotationActivity : AppCompatActivity() {
 
@@ -68,6 +69,7 @@ class AnnotationActivity : AppCompatActivity() {
 
         var textName = dialogAnnot.editName
         var costText = dialogAnnot.editCost
+        var deleteAnnot = dialogAnnot.deleteAnnot
 
         var adapter = ShoppinAdapter(this, R.layout.autocomplete, Variable.getListAnnotShoppin(this))
         textName.setAdapter(adapter)
@@ -91,6 +93,12 @@ class AnnotationActivity : AppCompatActivity() {
 
         var cancelButton = dialogAnnot.cancelAnnot
         var okButton = dialogAnnot.okAnnot
+
+        deleteAnnot.setOnClickListener(View.OnClickListener {
+            db?.deleteRow(db?.ANNOT!!, "ANNOT_ID="+annotID)
+            (view.parent as ViewGroup).removeView(view)
+            builder?.dismiss()
+        })
 
         cancelButton.setOnClickListener(View.OnClickListener {
             builder?.dismiss()

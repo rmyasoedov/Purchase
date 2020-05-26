@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar) //Установить тулбар
         requestedOrientation = (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) //Запрет на горизонтальный разворот
 
-
         //Вызывается метод, выводящий все группы
         Group(this, false).listGroups(Variable.firstGroup)
 
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         shopin?.listShopinID()
         //-------------------------------------------------------
     }
-
 
     //Добавить контекстное меню на тулбар верхней части экрана
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -48,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
             R.id.deleteActiveShopin -> {
-                //deleteCheckedShopin()
                 Variable.deleteCheckedShopin(this)
                 return true
             }
