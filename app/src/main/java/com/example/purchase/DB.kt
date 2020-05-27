@@ -7,7 +7,7 @@ import android.util.Log
 import com.example.purchase.MainActivity
 import java.lang.Exception
 
-private val DATABASE_VERSION = 5
+private val DATABASE_VERSION = 7
 private val DATABASE_NAME = "Purchase"
 
 class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -34,18 +34,22 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         db?.execSQL("CREATE TABLE "+ANNOT+" ("+
                     "ANNOT_ID INTEGER PRIMARY KEY, "+
                     "ANNOT_NAME TEXT NOT NULL, "+
-                    "ANNOT_COST REAL)")
+                    "ANNOT_COST REAL);")
 
+        db?.execSQL("CREATE UNIQUE INDEX ANNOT_UNIQUE ON "+ANNOT+"(ANNOT_NAME, ANNOT_COST);")
+
+        //Триггер подсказки: создавать новую подсказку при создании новой покупки
         db?.execSQL("CREATE TRIGGER ADD_ANNOTATIONS_INSERT AFTER INSERT "+
                         "ON "+SHOPIN+
                         " BEGIN "+
-                        "INSERT INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
+                        "INSERT OR REPLACE INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
                         "END;")
 
+        //Триггер подсказки: создавать новую подсказку при изменении покупки
         db?.execSQL("CREATE TRIGGER ADD_ANNOTATIONS_UPDATE AFTER UPDATE "+
                 "ON "+SHOPIN+
                 " BEGIN "+
-                "INSERT INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
+                "INSERT OR REPLACE INTO "+ANNOT+" (ANNOT_NAME, ANNOT_COST) VALUES(NEW.SH_NAME, NEW.SH_COST);"+
                 "END;")
     }
 
@@ -56,10 +60,6 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_INSERT")
         db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_UPDATE")
         onCreate(db)
-    }
-
-    override fun onConfigure(db: SQLiteDatabase?) {
-        super.onConfigure(db)
     }
 
     override fun onOpen(db: SQLiteDatabase?) {

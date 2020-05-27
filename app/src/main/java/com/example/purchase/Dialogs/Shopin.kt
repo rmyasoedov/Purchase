@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -44,6 +46,15 @@ class Shopin{
         var nameText = mDialogView.nameShopinText
         var countText = mDialogView.countShopinText
         var costText = mDialogView.costShopinText
+        var label = mDialogView.clearFieldInputShoppin
+
+        nameText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                label.visibility = View.INVISIBLE
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
 
         var adapter = ShoppinAdapter(context!!, R.layout.autocomplete, Variable.getListAnnotShoppin(context!!))
         nameText.setAdapter(adapter)
@@ -65,6 +76,11 @@ class Shopin{
             val count: Float = if(countText.text.toString().length==0) 0F else countText.text.toString().toFloat()
             val cost: Float = if(costText.text.toString().length==0) 0F else costText.text.toString().toFloat()
             val id = Variable.selectGroupID
+
+            if(name.length==0){
+                label.visibility = View.VISIBLE
+                return@OnClickListener
+            }
 
             val database: SQLiteDatabase = db!!.writableDatabase
             val contentValues = ContentValues()

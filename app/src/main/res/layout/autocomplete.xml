@@ -3,22 +3,39 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:columnCount="2"
+    android:rowCount="2"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp"
+    android:paddingLeft="7dp"
+    android:paddingRight="10dp"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/annotName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_row="0"
         android:layout_column="0"
         android:textColor="#000"
         android:layout_gravity="fill_horizontal"
         android:layout_height="wrap_content"
-        android:text="Pokupka 1"/>
+        android:text="Pokupka  1"/>
 
     <TextView
         android:id="@+id/annotCost"
         android:layout_width="wrap_content"
+        android:minWidth="50dp"
+        android:layout_row="0"
         android:layout_column="1"
         android:layout_height="wrap_content"
         android:text="500"/>
+
+    <LinearLayout
+        android:layout_marginTop="20dp"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#3C3F41"/>
 
 </GridLayout>

@@ -43,7 +43,7 @@
         android:id="@+id/clearFieldInputShoppin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="поле не должно быть пустым"
+        android:text="поле 'Наименование покупки' не должно быть пустым"
         android:textSize="10sp"
         android:visibility="invisible"
         android:textColor="#ff0000"/>
@@ -58,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="22sp"
+            android:singleLine="true"
             android:hint="Наименование покупки"/>
 
     </com.google.android.material.textfield.TextInputLayout>
