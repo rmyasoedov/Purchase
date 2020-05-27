@@ -1,12 +1,15 @@
 package com.example.purchase
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
+import java.lang.Exception
+import java.security.spec.ECField
 
 class ShoppinAdapter(private val mContext: Context,
                      private val viewResourceId: Int,
@@ -63,14 +66,18 @@ class ShoppinAdapter(private val mContext: Context,
         }
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            val filteredList =  results?.values as ArrayList<ShoppinList>?
+            try{
+                val filteredList =  results?.values as ArrayList<ShoppinList>?
 
-            if (results != null && results.count > 0) {
-                clear()
-                for (c: ShoppinList in filteredList ?: listOf<ShoppinList>()) {
-                    add(c)
+                if (results != null && results.count > 0) {
+                    clear()
+                    for (c: ShoppinList in filteredList ?: listOf<ShoppinList>()) {
+                        add(c)
+                    }
+                    notifyDataSetChanged()
                 }
-                notifyDataSetChanged()
+            }catch (e: Exception){
+                Log.i("Tester",e.toString())
             }
         }
     }

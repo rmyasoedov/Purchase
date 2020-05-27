@@ -74,6 +74,7 @@
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:paddingTop="25dp"
+                android:layoutAnimation="@anim/animation_slide"
                 android:layout_height="wrap_content">
 
 

@@ -62,8 +62,8 @@ class Shopin{
         //Подтверждение покупки
         okButton.setOnClickListener(View.OnClickListener {
             val name: String = nameText.text.toString()
-            val count: Int = if(countText.text.toString().toInt()==null) 0 else countText.text.toString().toInt()
-            val cost: Float = if(costText.text.toString().toFloat()==null) 0F else costText.text.toString().toFloat()
+            val count: Float = if(countText.text.toString().length==0) 0F else countText.text.toString().toFloat()
+            val cost: Float = if(costText.text.toString().length==0) 0F else costText.text.toString().toFloat()
             val id = Variable.selectGroupID
 
             val database: SQLiteDatabase = db!!.writableDatabase
@@ -106,7 +106,7 @@ class Shopin{
             do {
                 val shID = cursor.getInt(cursor.getColumnIndex("SH_ID"))
                 val shGroupID = cursor.getInt(cursor.getColumnIndex("SH_GROUP_ID"))
-                val shCount = cursor.getInt(cursor.getColumnIndex("SH_COUNTS"))
+                val shCount = cursor.getFloat(cursor.getColumnIndex("SH_COUNTS"))
                 val shCost = cursor.getFloat(cursor.getColumnIndex("SH_COST"))
                 val shName = cursor.getString(cursor.getColumnIndex("SH_NAME"))
                 val shAct = cursor.getInt(cursor.getColumnIndex("SH_ACTIVATE"))
@@ -164,7 +164,7 @@ class Shopin{
                         if(text.visibility==View.VISIBLE)
                             text.text = getCountActiveGroup(Variable.selectGroupID!!).toString()
                     }
-                    Shopin(context!!).setTextSum()
+                    setTextSum()
                     database.close()
                 })
                 //--------------------------------------------------------------------------------------
@@ -255,6 +255,8 @@ class Shopin{
         var countText = mDialogView.countShopinText
         var costText = mDialogView.costShopinText
 
+
+
         var adapter = ShoppinAdapter(context!!, R.layout.autocomplete, Variable.getListAnnotShoppin(context!!))
         nameText.setAdapter(adapter)
 
@@ -266,7 +268,7 @@ class Shopin{
 
         deleteButton.visibility = View.VISIBLE
         nameText.setText(cursor.getString(cursor.getColumnIndex("SH_NAME")))
-        countText.setText(cursor.getInt(cursor.getColumnIndex("SH_COUNTS")).toString())
+        countText.setText(cursor.getFloat(cursor.getColumnIndex("SH_COUNTS")).toString())
         costText.setText(cursor.getFloat(cursor.getColumnIndex("SH_COST")).toString())
 
         editShopin = AlertDialog.Builder(this.context!!)

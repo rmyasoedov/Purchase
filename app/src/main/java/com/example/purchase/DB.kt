@@ -7,7 +7,7 @@ import android.util.Log
 import com.example.purchase.MainActivity
 import java.lang.Exception
 
-private val DATABASE_VERSION = 4
+private val DATABASE_VERSION = 5
 private val DATABASE_NAME = "Purchase"
 
 class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -25,8 +25,8 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         db?.execSQL("CREATE TABLE "+SHOPIN+" ("+
                     "SH_ID integer primary key, "+
                     "SH_NAME text NOT NULL, "+
-                    "SH_COUNTS integer, "+
-                    "SH_COST real, "+
+                    "SH_COUNTS real DEFAULT 0.0, "+
+                    "SH_COST real DEFAULT 0.0, "+
                     "SH_ACTIVATE integer DEFAULT 0, "+
                     "SH_GROUP_ID integer, "+
                     "FOREIGN KEY (SH_GROUP_ID) REFERENCES "+GROUPS+"(GROUP_ID) ON DELETE CASCADE)")

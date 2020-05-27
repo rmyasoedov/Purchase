@@ -39,6 +39,15 @@
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/clearFieldInputShoppin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="поле не должно быть пустым"
+        android:textSize="10sp"
+        android:visibility="invisible"
+        android:textColor="#ff0000"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -68,8 +77,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="22sp"
-                android:text="1"
-                android:inputType="number"
+                android:text="1.0"
+                android:inputType="numberDecimal"
                 android:hint="Количество"/>
         </com.google.android.material.textfield.TextInputLayout>
 

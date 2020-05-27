@@ -143,7 +143,6 @@ class AnnotationActivity : AppCompatActivity() {
             builder.dismiss()
         })
 
-
     }
 
 

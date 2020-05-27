@@ -342,5 +342,9 @@ class Group {
         listShoppin.removeAllViews()
 
         ((context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView).setText("Список покупок")
+
+        var blockPayments = (context as Activity).findViewById<LinearLayout>(R.id.blockSumm) as LinearLayout
+        (blockPayments.findViewById<TextView>(R.id.sumBuyActive) as TextView).setText("0.00")
+        (blockPayments.findViewById<TextView>(R.id.sumBuy) as TextView).setText("0.00")
     }
 }
