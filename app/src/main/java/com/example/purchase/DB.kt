@@ -7,7 +7,7 @@ import android.util.Log
 import com.example.purchase.MainActivity
 import java.lang.Exception
 
-private val DATABASE_VERSION = 7
+private val DATABASE_VERSION = 9
 private val DATABASE_NAME = "Purchase"
 
 class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -20,7 +20,8 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
 
         db?.execSQL("CREATE TABLE "+GROUPS+" (" +
                 "GROUP_ID integer primary key, " +
-                "GROUP_NAME text NOT NULL)")
+                "GROUP_NAME text NOT NULL, " +
+                "CONSTRAINT name_unique UNIQUE (GROUP_NAME))")
 
         db?.execSQL("CREATE TABLE "+SHOPIN+" ("+
                     "SH_ID integer primary key, "+

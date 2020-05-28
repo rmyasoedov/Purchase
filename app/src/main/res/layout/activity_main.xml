@@ -53,20 +53,6 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:paddingLeft="10dp"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:paddingLeft="20dp"
-            android:id="@+id/testAnim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TestAnimation"/>
-
-    </LinearLayout>
-
     <GridLayout
         style="@style/MainGrid"
         android:layout_width="match_parent"

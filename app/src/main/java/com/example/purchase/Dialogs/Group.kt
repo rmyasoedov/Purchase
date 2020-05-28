@@ -6,6 +6,7 @@ import com.example.purchase.MainActivity
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import android.graphics.Color
 import android.graphics.Typeface
@@ -26,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.container_group.view.*
 import kotlinx.android.synthetic.main.dialog_add_group.view.*
+import java.lang.Exception
 
 class Group {
     private var inputGroup: AlertDialog?= null
@@ -72,15 +74,30 @@ class Group {
         //Обработчик события подтверждения ввода названия группы
         positiveButton?.setOnClickListener(View.OnClickListener() {
             group = inputField.text.toString()
+            var database = db?.writableDatabase
+            var cur = database?.rawQuery("select GROUP_ID from "+db?.GROUPS+" where GROUP_NAME='"+group+"'", null)
 
-            if(group.length==0){ //Если поле пустое, то выводим предупреждение без создания записи
+
+            if(group.length==0) { //Если поле пустое, то выводим предупреждение без создания записи
+                clearText.setText("Поле не должно быть пустым")
                 clearText.visibility = View.VISIBLE
+                cur?.close()
+                database?.close()
+                return@OnClickListener
+            }
 
-            } else {//Если группу можно создавать
-
+            if(cur?.count!! >0){
+                clearText.setText("Группа с таким наименованием уже существует")
+                clearText.visibility = View.VISIBLE
+                cur?.close()
+                database?.close()
+                return@OnClickListener
+            }
+                //Если группу можно создавать
+            database?.close()
+            cur?.close()
                 inputGroup?.dismiss() //закрывает окно ввода
                 saveGroup(group)
-            }
         })
     }
 
@@ -89,10 +106,14 @@ class Group {
         val database: SQLiteDatabase = db!!.writableDatabase
         val contentValues = ContentValues()
 
-        //Log.i("Tester","добавляем: "+groupName)
-        contentValues.put("GROUP_NAME", groupName)
-        database.insert(db?.GROUPS, null, contentValues)
-        db?.close()
+        try{
+            contentValues.put("GROUP_NAME", groupName)
+            database.insert(db?.GROUPS, null, contentValues)
+            database.close()
+            db?.close()
+        }catch (e: Exception){
+            Log.i("DB", "EXP: "+e.toString())
+        }
 
         val view = (context as Activity).findViewById<View>(R.id.listGroupsContainer) as LinearLayout
         view.removeAllViews()
@@ -241,8 +262,8 @@ class Group {
                     "Изменить"->{this.editGroupName(groupID, view)}
                     "Удалить группу"->{this.deleteGroup(groupID)}
                     "Удалить отмеченные"->{Variable.deleteCheckedShopin(context!!)}
-                    "Поделиться списком"->{}
-                    "Поделиться простым списком"->{}
+                    "Поделиться списком"->{shareEasyList(true, groupID)}
+                    "Поделиться простым списком"->{clickShare(true, groupID)}
                     "Отмена"->{}
                 }
             }!!.show()
@@ -311,11 +332,18 @@ class Group {
             var newName = text.text.toString()
 
             if(newName.length==0){
+                clear.setText("Поле не должно быть пустым")
                 clear.visibility = View.VISIBLE
             } else{
                 contentValues.clear()
                 contentValues.put("GROUP_NAME", newName)
-                database.update(db?.GROUPS, contentValues, "GROUP_ID="+groupID, null)
+                try{
+                    database.update(db?.GROUPS, contentValues, "GROUP_ID="+groupID, null)
+                }catch (e: SQLiteConstraintException){
+                    clear.setText("Группа с таким наименованием уже существует")
+                    clear.visibility = View.VISIBLE
+                    return@OnClickListener
+                }
                 val groupNameField = view.findViewById<TextView>(R.id.nameGroupField) as TextView
                 groupNameField.setText(newName)
                 this.clickGr(groupID, newName)
@@ -354,5 +382,71 @@ class Group {
         var blockPayments = (context as Activity).findViewById<LinearLayout>(R.id.blockSumm) as LinearLayout
         (blockPayments.findViewById<TextView>(R.id.sumBuyActive) as TextView).setText("0.00")
         (blockPayments.findViewById<TextView>(R.id.sumBuy) as TextView).setText("0.00")
+    }
+
+
+    //Поделиться списком
+    fun clickShare(group: Boolean, groupID: Int){
+
+        var where = if(group==false) "" else " WHERE SH_GROUP_ID="+groupID+" "
+
+        var database = db?.writableDatabase
+        var cursor = database?.rawQuery("select *from "+db?.SHOPIN+where+" order by SH_GROUP_ID, SH_NAME", null)
+
+        if(cursor?.count==0) return
+
+        var str = "мой список\n"
+        cursor?.moveToFirst()!!
+        var idGr = cursor?.getInt(cursor.getColumnIndex("SH_GROUP_ID"))
+        if(cursor?.moveToFirst()!!){
+            do{
+                if(cursor?.getInt(cursor.getColumnIndex("SH_GROUP_ID"))!=idGr){
+                    idGr = cursor?.getInt(cursor.getColumnIndex("SH_GROUP_ID"))
+                    str= str+"\n"
+                }
+
+                val cost = if(cursor.getFloat(cursor.getColumnIndex("SH_COST"))==0F) "" else "   Ц: "+
+                        cursor.getFloat(cursor.getColumnIndex("SH_COST"))+"="
+
+                str = str+" "+cursor.getString(cursor.getColumnIndex("SH_NAME"))+cost+"\n"
+            }while (cursor?.moveToNext())
+        }
+        str+="Пожалуйста, вот мой список :)"
+        Variable.Share(str, context!!)
+        cursor.close()
+        database?.close()
+    }
+
+    //Поделиться простым списком
+    fun shareEasyList(group: Boolean, groupID: Int){
+        var where  = if(group==false) "" else " AND sh.SH_GROUP_ID="+groupID
+
+        var database = db?.writableDatabase
+        var cursor = database?.rawQuery("select sh.SH_NAME as NAME, " +
+                "                                           sh.SH_COUNTS as COUNTS, " +
+                "                                           sh.SH_COST as COST, " +
+                "                                           (sh.SH_COST*sh.SH_COUNTS) AS SUMMA, " +
+                "                                           SH_ACTIVATE as ACTIVATE," +
+                "                                            gr.GROUP_NAME AS GROUPP " +
+                "                                           FROM "+db?.SHOPIN+" sh, "+db?.GROUPS+" gr WHERE sh.SH_GROUP_ID=gr.GROUP_ID"+where, null)
+
+        if(cursor?.count==0) return
+
+        var str = "Список покупок\n"
+        if(cursor?.moveToFirst()!!){
+            do{
+                Log.i("Tester", cursor.getString(cursor.getColumnIndex("NAME"))+" "+cursor.getString(cursor.getColumnIndex("SUMMA"))+" "+cursor.getString(cursor.getColumnIndex("GROUPP")))
+
+                var activ = if(cursor.getInt(cursor.getColumnIndex("ACTIVATE"))==0) " " else "+"
+
+                str=str+"`"+cursor.getString(cursor.getColumnIndex("NAME"))+"  `   Q:"+
+                        cursor.getString(cursor.getColumnIndex("COUNTS"))+
+                        "  ` P:"+cursor.getString(cursor.getColumnIndex("COST"))+
+                        "  ` S:"+cursor.getString(cursor.getColumnIndex("SUMMA"))+
+                        " `"+activ+" `"+cursor.getString(cursor.getColumnIndex("GROUPP"))+" `\n"
+            }while (cursor.moveToNext())
+        }
+        str+="Пожалуйста, вот мой список :)"
+        Variable.Share(str, context!!)
     }
 }

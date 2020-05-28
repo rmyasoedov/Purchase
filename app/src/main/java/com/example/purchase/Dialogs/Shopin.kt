@@ -37,6 +37,13 @@ class Shopin{
     //=================================================================================
 
     fun addShopin(){
+        var database = db?.writableDatabase
+        var cur = database?.rawQuery("select GROUP_ID from "+db?.GROUPS, null)
+        if(cur?.count==0){
+            val toast = Toast.makeText(context,"Создайте группу товаров",Toast.LENGTH_SHORT)
+            toast.show()
+            return
+        }
         var mDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_shopin,null)
 
         inputShopin = AlertDialog.Builder(context!!)
