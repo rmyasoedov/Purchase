@@ -92,6 +92,7 @@ class Shopin{
             database.insert(db?.SHOPIN, null, contentValues)
             db?.close()
             inputShopin?.dismiss()
+            updateCountsInGroup()
             listShopinID()
         })
     }
@@ -105,12 +106,12 @@ class Shopin{
         val cur = database?.rawQuery("SELECT *FROM "+db?.SHOPIN, null)
         if(cur.moveToNext()){
             do{
-                Log.i("DB", cur.getString(cur.getColumnIndex("SH_NAME")))
+                //Log.i("DB", cur.getString(cur.getColumnIndex("SH_NAME")))
             }while (cur.moveToNext())
         }
 
 
-        Log.i("Tester", "Counts: "+cur.count)
+        //Log.i("Tester", "Counts: "+cur.count)
         cur.close()
         //---------------------------
         val cursor: Cursor = database?.query(db?.SHOPIN, null, "SH_GROUP_ID="+id.toString(), null, null, null, "SH_ACTIVATE")
@@ -133,14 +134,15 @@ class Shopin{
                 var contShopin = LayoutInflater.from(context).inflate(R.layout.container_shopin,null)
 
                 val nameShopin = contShopin.nameShopin
-                val paramShopin = contShopin.paramShopin
+                val paramCostShoppin = contShopin.parapCostShoppin.setText("Ц: "+shCost)
+                val paramCountShoppin = contShopin.paramCountShoppin.setText("К: "+shCount)
+                val paramSumShopin = contShopin.paramSumShoppin.setText("Сум: "+(shCost*shCount))
                 val row = contShopin.shopinRow
                 val check = contShopin.activeShopin
                 val editShopin = contShopin.editShopin
 
                 check.isChecked = if(shAct==0) false else true
                 nameShopin.setText(shName)
-                paramShopin.setText("Ц: "+shCost+" К: "+shCount+" Сум: "+(shCost*shCount))
 
                 //Нажатие на кнопку редактирования покупки
                 editShopin.setOnClickListener(View.OnClickListener {
@@ -173,13 +175,8 @@ class Shopin{
                     contentValues.put("SH_ACTIVATE", newAct)
                     database?.update(db?.SHOPIN, contentValues,"SH_ID="+shID,null)
 
-                    var grBlock = (context as Activity).findViewById<LinearLayout>(R.id.listGroupsContainer) as LinearLayout
-                    for(i in 0 until grBlock.childCount){
-                        val text = (grBlock.getChildAt(i) as LinearLayout).findViewById<TextView>(R.id.countsShopin) as TextView
+                    updateCountsInGroup()
 
-                        if(text.visibility==View.VISIBLE)
-                            text.text = getCountActiveGroup(Variable.selectGroupID!!).toString()
-                    }
                     setTextSum()
                     database.close()
                 })
@@ -194,6 +191,18 @@ class Shopin{
         }
     }
     //==============================================================================================
+
+    //Обновление информации о количестве не отмеченных покупок в правом блоке
+    fun updateCountsInGroup(){
+        var grBlock = (context as Activity).findViewById<LinearLayout>(R.id.listGroupsContainer) as LinearLayout
+        for(i in 0 until grBlock.childCount){
+            val text = (grBlock.getChildAt(i) as LinearLayout).findViewById<TextView>(R.id.countsShopin) as TextView
+
+            var tagCount = getCountActiveGroup((grBlock.getChildAt(i) as LinearLayout).tag as Int)
+            text.text = tagCount.toString()
+            text.visibility= if(tagCount==0) View.INVISIBLE else View.VISIBLE
+        }
+    }
 
     //Функция для получения количества отмеченных покупок активной группы
     fun getCountActiveGroup(groupID: Int): Int{
@@ -253,6 +262,7 @@ class Shopin{
         val database: SQLiteDatabase = db!!.writableDatabase
         database?.delete(db?.SHOPIN,"SH_ID="+id, null)
         database.close()
+        updateCountsInGroup()
     }
 
     //Редактирование покупки
@@ -270,8 +280,15 @@ class Shopin{
         var nameText = mDialogView.nameShopinText
         var countText = mDialogView.countShopinText
         var costText = mDialogView.costShopinText
+        var label = mDialogView.clearFieldInputShoppin
 
-
+        nameText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                label.visibility = View.INVISIBLE
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
 
         var adapter = ShoppinAdapter(context!!, R.layout.autocomplete, Variable.getListAnnotShoppin(context!!))
         nameText.setAdapter(adapter)
@@ -295,6 +312,12 @@ class Shopin{
         okButton.setOnClickListener(View.OnClickListener {
             val database: SQLiteDatabase = db!!.writableDatabase
             val contentValues = ContentValues()
+
+            if(nameText.text.toString().length==0){
+                label.visibility = View.VISIBLE
+                return@OnClickListener
+            }
+
             contentValues.put("SH_NAME", nameText.text.toString())
             contentValues.put("SH_COUNTS", countText.text.toString())
             contentValues.put("SH_COST", costText.text.toString())

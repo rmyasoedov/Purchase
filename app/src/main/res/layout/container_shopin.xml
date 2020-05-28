@@ -42,12 +42,13 @@
                 android:layout_gravity="fill_horizontal"
                 android:maxWidth="0dp"
                 android:ellipsize="end"
-                android:paddingRight="5dp"
+                android:paddingRight="7dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="#000"
                 android:textSize="12sp"
-                android:text="Силовая скамья"
+                android:singleLine="true"
+                android:text="Силовая скамья hrheri irehi uerh i uherguiherigh ierhiehr giuhre eoijg"
                 android:layout_column="0"/>
 
             <CheckBox
@@ -58,15 +59,54 @@
                 android:layout_column="1"/>
         </GridLayout>
 
-        <TextView
-            android:id="@+id/paramShopin"
+        <LinearLayout
+            android:paddingLeft="50dp"
+            android:paddingRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:gravity="right"
-            android:paddingRight="5dp"
-            android:text="Ц: 122,00 К: 2 Сум: 244,00"
-            android:textColor="#A9A9A9"/>
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/parapCostShoppin"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#A9A9A9"
+                android:gravity="right"
+                android:textSize="11sp"
+                android:text="Ц: 122,00"/>
+
+            <TextView
+                android:id="@+id/paramCountShoppin"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:gravity="right"
+                android:textSize="11sp"
+                android:textColor="#A9A9A9"
+                android:text="К: 2,00"/>
+
+            <TextView
+                android:id="@+id/paramSumShoppin"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#A9A9A9"
+                android:textSize="11sp"
+                android:gravity="right"
+                android:text="Сум: 244,00"/>
+
+        </LinearLayout>
+
+<!--        <TextView-->
+<!--            android:id="@+id/paramShopin"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textSize="11sp"-->
+<!--            android:gravity="right"-->
+<!--            android:paddingRight="5dp"-->
+<!--            android:text="Ц: 122,00 К: 2 Сум: 244,00"-->
+<!--            android:textColor="#A9A9A9"/>-->
     </LinearLayout>
 
     <LinearLayout

@@ -24,6 +24,7 @@ import com.example.purchase.R.drawable
 import com.example.purchase.Variable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
+import kotlinx.android.synthetic.main.container_group.view.*
 import kotlinx.android.synthetic.main.dialog_add_group.view.*
 
 class Group {
@@ -111,19 +112,23 @@ class Group {
 
         if(cursor.moveToFirst()){
             do{
-
                 val id: Int = cursor.getColumnIndex("GROUP_ID") //Достаем индекс столбца из таблицы
                 val name: Int = cursor.getColumnIndex("GROUP_NAME") //Достаем индекс столбца из таблицы
 
                 var conGroup = LayoutInflater.from(context).inflate(R.layout.container_group,null)
+                var linear = conGroup.bgContainer
+                linear.tag = cursor.getInt(id)
                 var textName = conGroup.findViewById<TextView>(R.id.nameGroupField) as TextView
                 var countShopin = conGroup.findViewById<TextView>(R.id.countsShopin) as TextView
                 var bg = conGroup.findViewById<LinearLayout>(R.id.bgContainer) as LinearLayout
                 textName.text = cursor.getString(name)
 
-                countShopin.text = Shopin(context!!).getCountActiveGroup(cursor.getInt(id)).toString()
+                var countActive = Shopin(context!!).getCountActiveGroup(cursor.getInt(id))
+                if(countActive==0) countShopin.visibility = View.INVISIBLE
+                countShopin.text = countActive.toString()
 
                 val title = (context as Activity).findViewById<View>(R.id.groupNameTitle) as TextView
+
                 //Если идет загрузка списка после старта приложения
                 if(pos==Variable.firstGroup && cursor.position==0) {
                     Variable.selectGroupID = cursor.getInt(id)
@@ -201,16 +206,19 @@ class Group {
     fun setGroupActive(type: Boolean, view: LinearLayout){
         var text = (view.findViewById<TextView>(R.id.nameGroupField) as TextView)
         var count = (view.findViewById<TextView>(R.id.countsShopin) as TextView)
+
+        Log.i("Tester", "P: "+text.text.toString())
+        count.visibility = if(count.text.toString()=="0") View.INVISIBLE else View.VISIBLE
         if(type==false){
                 view.setBackgroundResource(0)
                 text.setTextColor(ContextCompat.getColor(context!!, R.color.defaultTextColor))
                 text.setTypeface(null)
-                count.visibility = View.INVISIBLE
+                //count.visibility = View.INVISIBLE
         }else {
             view.setBackgroundResource(R.drawable.stroke_bg_group_item)
             text.setTextColor(ContextCompat.getColor(context!!, R.color.colorAccent))
             text.setTypeface(null, Typeface.BOLD)
-            count.visibility = View.VISIBLE
+            //count.visibility = View.VISIBLE
         }
     }
 

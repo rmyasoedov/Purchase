@@ -2,6 +2,8 @@ package com.example.purchase
 
 import android.content.ContentValues
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -70,9 +72,18 @@ class AnnotationActivity : AppCompatActivity() {
         var textName = dialogAnnot.editName
         var costText = dialogAnnot.editCost
         var deleteAnnot = dialogAnnot.deleteAnnot
+        var label = dialogAnnot.clearFieldInputAnnot
 
         var adapter = ShoppinAdapter(this, R.layout.autocomplete, Variable.getListAnnotShoppin(this))
         textName.setAdapter(adapter)
+
+        textName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                label.visibility = View.INVISIBLE
+            }
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) { }
+        })
 
         textName.onItemClickListener =
             AdapterView.OnItemClickListener { adapterView, view, position, id ->
@@ -86,7 +97,6 @@ class AnnotationActivity : AppCompatActivity() {
         textName.setText(cursor?.getString(cursor?.getColumnIndex("ANNOT_NAME")))
         costText.setText(cursor?.getFloat(cursor.getColumnIndex("ANNOT_COST")).toString())
 
-        //var builder: AlertDialog
         var builder = AlertDialog.Builder(this)
                     ?.setView(dialogAnnot)
                     ?.show()
@@ -106,6 +116,12 @@ class AnnotationActivity : AppCompatActivity() {
 
         var contentValues = ContentValues()
         okButton.setOnClickListener(View.OnClickListener {
+
+            if(textName.text.toString().length==0){
+                label.visibility = View.VISIBLE
+                return@OnClickListener
+            }
+
             contentValues.clear()
             contentValues.put("ANNOT_NAME", textName.text.toString())
             contentValues.put("ANNOT_COST", costText.text.toString())
