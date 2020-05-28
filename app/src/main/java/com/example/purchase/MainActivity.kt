@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.view.animation.TranslateAnimation
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -35,6 +37,17 @@ class MainActivity : AppCompatActivity() {
         //Вызывается метод реализующий вывод покупок самой верхней группы
         shopin?.listShopinID()
         //-------------------------------------------------------
+
+        testAnim.setOnClickListener(View.OnClickListener {
+//            it.startAnimation(
+//                TranslateAnimation(0f, 40f,0f, 0f)
+//                .apply {
+//                    duration = 300
+//                })
+
+            it.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake))
+
+        })
     }
 
     //Добавить контекстное меню на тулбар верхней части экрана

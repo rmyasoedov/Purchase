@@ -1,15 +1,18 @@
 package com.example.purchase.Dialogs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.Color
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.example.firebasemessager.DB
@@ -99,6 +102,7 @@ class Shopin{
 
     //=====================================================================================
 
+    @SuppressLint("ResourceAsColor")
     fun listShopinID(){
         val id = Variable.selectGroupID
         val database: SQLiteDatabase = db!!.writableDatabase
@@ -141,7 +145,16 @@ class Shopin{
                 val check = contShopin.activeShopin
                 val editShopin = contShopin.editShopin
 
-                check.isChecked = if(shAct==0) false else true
+                //check.isChecked = if(shAct==0) false else true
+
+                if(shAct==0){
+                    nameShopin.setTextColor(Color.BLACK)
+                    check.isChecked = false
+                }else{
+                    nameShopin.setTextColor(Color.GRAY)
+                    check.isChecked = true
+                }
+
                 nameShopin.setText(shName)
 
                 //Нажатие на кнопку редактирования покупки
@@ -157,6 +170,8 @@ class Shopin{
                     val database: SQLiteDatabase = db!!.writableDatabase
                     val act = database?.rawQuery("SELECT *FROM "+db?.SHOPIN+" WHERE SH_ID="+shID, null)
                     val check = row.findViewById<CheckBox>(R.id.activeShopin) as CheckBox
+                    val nameShoppin = row.findViewById<TextView>(R.id.nameShopin) as TextView
+
                     act.moveToFirst()
                     val actId = act.getInt(act.getColumnIndex("SH_ACTIVATE"))
                     act.close()
@@ -164,12 +179,16 @@ class Shopin{
                     var newAct = 0
 
                     if(actId==0){
+                        nameShopin.setTextColor(Color.GRAY)
                         newAct = 1
                         check.isChecked = true
                     } else{
+                        nameShopin.setTextColor(Color.BLACK)
                         newAct = 0
                         check.isChecked = false
                     }
+
+                    nameShoppin.startAnimation(AnimationUtils.loadAnimation(context, R.anim.shake))
 
                     val contentValues = ContentValues()
                     contentValues.put("SH_ACTIVATE", newAct)
