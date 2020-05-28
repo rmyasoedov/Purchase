@@ -7,7 +7,7 @@ import android.util.Log
 import com.example.purchase.MainActivity
 import java.lang.Exception
 
-private val DATABASE_VERSION = 9
+private val DATABASE_VERSION = 10
 private val DATABASE_NAME = "Purchase"
 
 class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -58,6 +58,7 @@ class DB(сontext: Context?) : SQLiteOpenHelper(сontext, DATABASE_NAME, null, D
         db?.execSQL("drop table if exists "+GROUPS)
         db?.execSQL("drop table if exists "+SHOPIN)
         db?.execSQL("drop table if exists "+ANNOT)
+        db?.execSQL("DROP INDEX IF EXISTS ANNOT_UNIQUE")
         db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_INSERT")
         db?.execSQL("DROP TRIGGER IF EXISTS "+ANNOT+".ADD_ANNOTATIONS_UPDATE")
         onCreate(db)
